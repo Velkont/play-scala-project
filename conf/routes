@@ -1,0 +1,15 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+#GET     /                           controllers.PhoneController.index
+POST    /phone                      controllers.PhoneController.addPhone
+POST    /phone/:id                  controllers.PhoneController.updatePhone(id: Long)
+GET     /phones                     controllers.PhoneController.getPhones
+GET     /phones/searchByName/       controllers.PhoneController.findByName(name: String)
+GET     /phones/searchByNumber/     controllers.PhoneController.findByNumber(number: String)
+DELETE  /phone/:id                  controllers.PhoneController.deletePhone(id: Long)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

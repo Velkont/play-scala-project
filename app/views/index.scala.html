@@ -1,0 +1,19 @@
+@(phone: Form[CreatePhoneForm])(implicit request: MessagesRequestHeader)
+
+@import helper._
+
+@request.flash.get("success").map { key =>
+   @request.messages(key)
+}
+
+@main("Welcome to Play") {
+  @form(routes.PhoneController.addPhone()) {
+		@inputText(phone("name"))
+		@inputText(phone("number"))
+		@CSRF.formField
+
+		<div class="buttons">
+			<input type="submit" value="Add Phone"/>
+		</div>
+	}
+}

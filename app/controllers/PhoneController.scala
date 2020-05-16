@@ -1,0 +1,86 @@
+package controllers
+
+import javax.inject._
+
+import models._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.data.validation.Constraints
+import play.api.i18n._
+import play.api.libs.json.Json
+import play.api.mvc._
+import play.api.libs.json.Json
+
+import scala.concurrent.{ExecutionContext, Future}
+
+class PhoneController @Inject()(repo: PhoneRepository,
+                                  cc: MessagesControllerComponents
+                                )(implicit ec: ExecutionContext)
+  extends MessagesAbstractController(cc) {
+
+  /**
+   * The mapping for the person form.
+   */
+  /*val validationTemplate = """\\+\d{1,4}-\d{10}""".r
+  val phoneForm: Form[CreatePhoneForm] = Form {
+    mapping(
+      "name" -> nonEmptyText,
+      "number" -> text/*.verifying(fields =>
+        fields match {
+          case validationTemplate(_*) => true
+          case _ => false
+        })*/
+    )(CreatePhoneForm.apply)(CreatePhoneForm.unapply)
+  }*/
+
+  /*def index = Action { implicit request =>
+    Ok(views.html.index(phoneForm))
+  }*/
+
+  /**
+   * The add person action.
+   *
+   * This is asynchronous, since we're invoking the asynchronous methods on PersonRepository.
+   */
+  def addPhone = Action.async { implicit request =>
+    val json = request.body.asJson.get
+    val name = (json\"name").as[String]
+    val number = (json\"number").as[String]
+    repo.create(name, number)
+    Future.successful(Ok("Phone successfully added"))
+  }
+  def updatePhone(id: Long) = Action.async { implicit request =>
+    val json = request.body.asJson.get
+    val name = (json\"name").as[String]
+    val number = (json\"number").as[String]
+    repo.update(id, name, number)
+    Future.successful(Ok("Phone successfully updated"))
+  }
+  def findByName(name: String) = Action.async { implicit request =>
+    repo.findByName(name).map(phones =>
+      Ok(Json.toJson(phones)))
+  }
+  def findByNumber(number: String) = Action.async { implicit request =>
+    repo.findByNumber(number).map(phones =>
+      Ok(Json.toJson(phones)))
+  }
+  def deletePhone(id: Long) = Action.async { implicit request =>
+    repo.delete(id)
+    Future.successful(Ok("Phone successfully deleted"))
+  }
+
+  def getPhones = Action.async { implicit request =>
+    repo.list().map { phones =>
+      Ok(Json.toJson(phones))
+    }
+  }
+}
+
+/**
+ * The create person form.
+ *
+ * Generally for forms, you should define separate objects to your models, since forms very often need to present data
+ * in a different way to your models.  In this case, it doesn't make sense to have an id parameter in the form, since
+ * that is generated once it's created.
+ */
+case class CreatePhoneForm(name: String, number: String)
