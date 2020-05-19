@@ -11,6 +11,7 @@ lazy val root = (project in file("."))
       "com.h2database" % "h2" % "1.4.199",
       specs2 % Test,
     ),
+    libraryDependencies += "org.postgresql" % "postgresql"%"42.2.5",
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",

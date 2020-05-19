@@ -21,21 +21,7 @@ class PhoneController @Inject()(repo: PhoneRepository,
   /**
    * The mapping for the person form.
    */
-  /*val validationTemplate = """\\+\d{1,4}-\d{10}""".r
-  val phoneForm: Form[CreatePhoneForm] = Form {
-    mapping(
-      "name" -> nonEmptyText,
-      "number" -> text/*.verifying(fields =>
-        fields match {
-          case validationTemplate(_*) => true
-          case _ => false
-        })*/
-    )(CreatePhoneForm.apply)(CreatePhoneForm.unapply)
-  }*/
-
-  /*def index = Action { implicit request =>
-    Ok(views.html.index(phoneForm))
-  }*/
+  val validationTemplate = """\+\d{1,4}-\d{10}""".r
 
   /**
    * The add person action.
@@ -46,8 +32,14 @@ class PhoneController @Inject()(repo: PhoneRepository,
     val json = request.body.asJson.get
     val name = (json\"name").as[String]
     val number = (json\"number").as[String]
-    repo.create(name, number)
-    Future.successful(Ok("Phone successfully added"))
+    val toReturn = number match {
+      case validationTemplate(_*) =>{
+        repo.create(name, number)
+        Future.successful(Ok("Phone successfully added"))
+      }
+      case _ => Future.successful(Ok("The phone number is invalid"))
+    }
+    toReturn
   }
   def updatePhone(id: Long) = Action.async { implicit request =>
     val json = request.body.asJson.get
