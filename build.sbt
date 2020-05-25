@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
       specs2 % Test,
     ),
     libraryDependencies += "org.postgresql" % "postgresql"%"42.2.5",
+    libraryDependencies += "au.com.bytecode" % "opencsv" % "2.4",
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",

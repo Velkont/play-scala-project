@@ -1,9 +1,12 @@
 package models
 
+import java.io.{BufferedWriter, FileWriter}
+
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.{GetResult, JdbcProfile}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
@@ -86,9 +89,6 @@ class PhoneRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impli
   def findByNumber(number: String): Future[Seq[Phone]]= {
     db.run(sql""" SELECT * FROM phones WHERE number ~* ${number}; """.as[Phone])
   }
-  def findTheSame(id: Long): Future[Boolean] = db.run({
-    phones.filter(_.id === id).exists.result
-  })
 
   def list(): Future[Seq[Phone]] = db.run {
     phones.result

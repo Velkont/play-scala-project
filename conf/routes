@@ -5,6 +5,7 @@
 # Home page
 #GET     /                           controllers.PhoneController.index
 POST    /phone                      controllers.PhoneController.addPhone
+GET     /phones/toCSV               controllers.PhoneController.writeToCSV
 POST    /phone/:id                  controllers.PhoneController.updatePhone(id: Long)
 GET     /phones                     controllers.PhoneController.getPhones
 GET     /phones/searchByName/       controllers.PhoneController.findByName(name: String)

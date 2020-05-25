@@ -11,12 +11,14 @@
 <div id="frame">
     <div id="content">
         <div class="dropdown">
-            <button class="dropbtn">Dropdown</button>
+            <button class="dropbtn">Меню</button>
             <div class="dropdown-content">
-                <a onclick="renderFindPhoneForm()">Найти телефон</a>
+                <a onclick="renderFindPhoneByNameForm()">Найти телефон по имени</a>
+                <a onclick="renderFindPhoneByNumberForm()">Найти телефон по номеру</a>
                 <a onclick="renderCreatePhoneForm()">Создать|Обновить телефон</a>
                 <a onclick="renderDeletePhoneForm()">Удалить телефон</a>
                 <a onclick="getPhones()">Посмотреть список</a>
+                <a onclick="writeToCSV()">Записать в CSV</a>
             </div>
         </div>
         <div id="commandForm">
@@ -24,7 +26,6 @@
         <div id="responseBlock">
             <h3>Ответ от приложения</h3>
             <div id = "answerBlock" >
-                <h3 id="answer" ></h3>
             </div>
         </div>
     </div>

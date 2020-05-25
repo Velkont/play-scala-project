@@ -1,7 +1,8 @@
 package controllers
 
-import javax.inject._
+import java.io.{BufferedWriter, FileWriter}
 
+import javax.inject._
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -11,9 +12,10 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.json.Json
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 
-class PhoneController @Inject()(repo: PhoneRepository,
+class PhoneController @Inject()(config: play.api.Configuration, repo: PhoneRepository,
                                   cc: MessagesControllerComponents
                                 )(implicit ec: ExecutionContext)
   extends MessagesAbstractController(cc) {
@@ -34,8 +36,16 @@ class PhoneController @Inject()(repo: PhoneRepository,
     val number = (json\"number").as[String]
     val toReturn = number match {
       case validationTemplate(_*) =>{
-        repo.create(name, number)
-        Future.successful(Ok("Phone successfully added"))
+        val findingResult = findNumber(number).flatMap{ rs =>
+          if(rs.isEmpty){
+              repo.create(name, number)
+              Future.successful(Ok("Phone successfully added"))
+            }
+          else{
+              Future.successful(Ok("Phone exists"))
+            }
+          }
+        findingResult
       }
       case _ => Future.successful(Ok("The phone number is invalid"))
     }
@@ -49,12 +59,15 @@ class PhoneController @Inject()(repo: PhoneRepository,
     Future.successful(Ok("Phone successfully updated"))
   }
   def findByName(name: String) = Action.async { implicit request =>
-    repo.findByName(name).map(phones =>
-      Ok(Json.toJson(phones)))
+    repo.findByName(name).map(phones =>{
+      Ok(Json.toJson(phones))
+    })
   }
   def findByNumber(number: String) = Action.async { implicit request =>
-    repo.findByNumber(number).map(phones =>
-      Ok(Json.toJson(phones)))
+    val clearNumber = "+".toString() + number.trim()
+    findNumber(clearNumber).map(phones => {
+      Ok(Json.toJson(phones))
+    })
   }
   def deletePhone(id: Long) = Action.async { implicit request =>
     repo.delete(id)
@@ -65,6 +78,21 @@ class PhoneController @Inject()(repo: PhoneRepository,
     repo.list().map { phones =>
       Ok(Json.toJson(phones))
     }
+  }
+  def findNumber(number: String) = {
+    repo.findByNumber("\\"+number)
+  }
+  def writeToCSV= Action.async { implicit request =>
+    val table = repo.list()
+    table.map(x=> {
+      val outputFile = new BufferedWriter(new FileWriter(config.get[String]("csvPath.csvPath")))
+      outputFile.write("id,name,number\n")
+      x.map(row=>{
+        outputFile.write(s"${row.id},${row.name},${row.number}\n")
+      })
+      outputFile.close()
+    })
+    Future.successful(Ok("Database has been written to CSV"))
   }
 }
 
