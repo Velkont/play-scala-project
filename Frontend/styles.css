@@ -13,7 +13,8 @@
     left: 20%;
     padding: 60px;
     margin: 20px 20px;
-    background-color: #4CAF50;
+    background-color: #92ED6B;
+    text-decoration: none;
 }
 #responseBlock{
     background-color: #3e8e41;
@@ -22,12 +23,15 @@
     padding: 12px 16px;
     margin: 20px;
     position: relative;
-    border: 1px solid navajowhite;
     overflow: auto;
     vertical-align: bottom;
 }
 h3{
     margin: 10px;
+}
+.row-box{
+    border: #4EA429 solid 1px;
+
 }
 .row{
     display: inline-block;
@@ -38,15 +42,16 @@ h3{
     float:right;
     background-color: #3e8e41;
     color: white;
-    padding: 16px;
+    padding: 14px;
     font-size: 16px;
-    border: white solid 2px;
+    border: #4EA429 solid 2px;
 }
 #answerBlock{
     width: auto;
     height: auto;
     margin: 5px;
     background-color: white;
+
 }
 
 #commandForm {
@@ -59,7 +64,6 @@ h3{
     vertical-align: top;
 }
 
-/* Dropdown Button */
 .dropbtn {
     background-color: #3e8e41;
     color: white;
@@ -68,7 +72,6 @@ h3{
     border: none;
 }
 
-/* The container <div> - needed to position the dropdown content */
 .dropdown {
     position: relative;
     vertical-align: top;
@@ -77,7 +80,7 @@ h3{
     margin: 10px 20px;
 }
 
-/* Dropdown Content (Hidden by Default) */
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -87,7 +90,6 @@ h3{
     z-index: 1;
 }
 
-/* Links inside the dropdown */
 .dropdown-content a {
     color: black;
     padding: 12px 16px;
@@ -95,11 +97,9 @@ h3{
     display: block;
 }
 
-/* Change color of dropdown links on hover */
+
 .dropdown-content a:hover {background-color: #ddd;}
 
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: #3e8e41;}

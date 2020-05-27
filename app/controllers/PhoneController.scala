@@ -20,23 +20,16 @@ class PhoneController @Inject()(config: play.api.Configuration, repo: PhoneRepos
                                 )(implicit ec: ExecutionContext)
   extends MessagesAbstractController(cc) {
 
-  /**
-   * The mapping for the person form.
-   */
+
   val validationTemplate = """\+\d{1,4}-\d{10}""".r
 
-  /**
-   * The add person action.
-   *
-   * This is asynchronous, since we're invoking the asynchronous methods on PersonRepository.
-   */
   def addPhone = Action.async { implicit request =>
     val json = request.body.asJson.get
     val name = (json\"name").as[String]
     val number = (json\"number").as[String]
     val toReturn = number match {
       case validationTemplate(_*) =>{
-        val findingResult = findNumber(number).flatMap{ rs =>
+        val findingResult = findNumber("\\"+number).flatMap{ rs =>
           if(rs.isEmpty){
               repo.create(name, number)
               Future.successful(Ok("Phone successfully added"))
@@ -64,8 +57,8 @@ class PhoneController @Inject()(config: play.api.Configuration, repo: PhoneRepos
     })
   }
   def findByNumber(number: String) = Action.async { implicit request =>
-    val clearNumber = "+".toString() + number.trim()
-    findNumber(clearNumber).map(phones => {
+    val cleanNumber = number.trim()
+    findNumber(cleanNumber).map(phones => {
       Ok(Json.toJson(phones))
     })
   }
@@ -80,7 +73,7 @@ class PhoneController @Inject()(config: play.api.Configuration, repo: PhoneRepos
     }
   }
   def findNumber(number: String) = {
-    repo.findByNumber("\\"+number)
+    repo.findByNumber(number)
   }
   def writeToCSV= Action.async { implicit request =>
     val table = repo.list()
@@ -96,11 +89,4 @@ class PhoneController @Inject()(config: play.api.Configuration, repo: PhoneRepos
   }
 }
 
-/**
- * The create person form.
- *
- * Generally for forms, you should define separate objects to your models, since forms very often need to present data
- * in a different way to your models.  In this case, it doesn't make sense to have an id parameter in the form, since
- * that is generated once it's created.
- */
 case class CreatePhoneForm(name: String, number: String)

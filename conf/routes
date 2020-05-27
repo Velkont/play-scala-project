@@ -2,8 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-#GET     /                           controllers.PhoneController.index
 POST    /phone                      controllers.PhoneController.addPhone
 GET     /phones/toCSV               controllers.PhoneController.writeToCSV
 POST    /phone/:id                  controllers.PhoneController.updatePhone(id: Long)

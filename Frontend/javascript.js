@@ -1,7 +1,9 @@
+
 function getPhones() {
     let xhr = new XMLHttpRequest();
     let field = document.getElementById("answerBlock");
-    xhr.open('GET', 'http://127.0.0.1:9000/phones', false);
+    let url = config.network.url+":"+config.network.port+"/phones";
+    xhr.open('GET', url, false);
     xhr.send();
     let response = JSON.parse(xhr.responseText);
     field.innerText="";
@@ -9,18 +11,16 @@ function getPhones() {
     }
 function writeToCSV() {
     let xhr = new XMLHttpRequest();
-    let field = document.getElementById("answerBlock");
-    xhr.open('GET', 'http://127.0.0.1:9000/phones/toCSV', false);
+    let url = config.network.url+":"+config.network.port+"/phones/toCSV";
+    xhr.open('GET', url, false);
     xhr.send();
-    //let response = JSON.parse(xhr.responseText);
-    //field.innerText="";
-    //response.forEach(x=>renderResponse(x, field));
     alert(xhr.responseText)
 }
 
 function createPhone() {
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", 'http://127.0.0.1:9000/phone', false);
+    let url = config.network.url+":"+config.network.port+"/phone";
+    xmlhttp.open("POST", url, false);
     xmlhttp.setRequestHeader("Content-Type", "application/json");
     let phoneForm = document.forms["createPhoneForm"];
     xmlhttp.send(JSON.stringify({
@@ -31,9 +31,10 @@ function createPhone() {
 }
 function updatePhone() {
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", 'http://127.0.0.1:9000/phone/', false);
+    let phoneForm = document.forms["updatePhoneForm"];
+    let url = config.network.url+":"+config.network.port+"/phone/"+phoneForm.elements["id"].value;
+    xmlhttp.open("POST", url, false);
     xmlhttp.setRequestHeader("Content-Type", "application/json");
-    let phoneForm = document.forms["createPhoneForm"];
     xmlhttp.send(JSON.stringify({
         name: phoneForm.elements["name"].value,
         number: phoneForm.elements["number"].value
@@ -42,7 +43,8 @@ function updatePhone() {
 }
 function deletePhone(id) {
     let xmlhttp = new XMLHttpRequest();
-    let url = 'http://127.0.0.1:9000/phone/'+id;
+    let url = config.network.url+":"+config.network.port+"/phone/"+id;
+    alert(config.network.url+":"+config.network.port+"/phone/"+id);
     xmlhttp.open("DELETE", url, false);
     xmlhttp.send();
     alert(xmlhttp.status + " " + xmlhttp.responseText)
@@ -59,8 +61,7 @@ function findPhoneByName() {
     let xmlhttp = new XMLHttpRequest();
     let field = document.getElementById("answerBlock");
     let name = document.forms["findPhoneForm"].elements["name"].value;
-    let url = 'http://127.0.0.1:9000/phones/searchByName/?name='+name;
-    alert(url);
+    let url = config.network.url+":"+config.network.port+"/phones/searchByName/?name="+name;
     xmlhttp.open("GET", url, false);
     xmlhttp.send();
     let response = JSON.parse(xmlhttp.responseText);
@@ -71,8 +72,7 @@ function findPhoneByNumber() {
     let xmlhttp = new XMLHttpRequest();
     let field = document.getElementById("answerBlock");
     let number = document.forms["findPhoneForm"].elements["number"].value;
-    let url = 'http://127.0.0.1:9000/phones/searchByNumber/?number='+ number;
-    alert(url);
+    let url = config.network.url+":"+config.network.port+"/phones/searchByNumber/?number="+number;
     xmlhttp.open("GET", url, false);
     xmlhttp.send();
     let response = JSON.parse(xmlhttp.responseText);
@@ -138,7 +138,7 @@ function renderDeletePhoneForm() {
 }
 function renderResponse(x, field) {
         field.insertAdjacentHTML("beforeend",
-            "<div id = tempId class = row>" +
+            "<div id = tempId class='row-box'>" +
             "<p class = row>"+x.id+" "+x.name+" "+x.number+"</p>" +
             "<button class='row-btn' onclick='deletePhoneInstRow(parentNode)'>Delete</button>" +
             "</div>");
